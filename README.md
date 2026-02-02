@@ -60,4 +60,9 @@ Rename the file `.env_template` to `.env` in the root directory and add your GOO
 * Task 4 (Generator): Implement the generate_node to answer questions in English with Citations.
 
 * Task 5 (Rewriter): Implement the rewrite_node to refine search queries when retrieval fails.
+
+# 🚀 Execution Order
+
+* Step1: `python build_rag.py`: Before running any agents, you must ingest the PDFs and convert them into vector embeddings. This allows you to experiment with different chunking strategies without re-running the evaluation logic every time.
+* Step2: `python evaluator.py`: Once the database is ready, run the evaluator to benchmark your agent.
   
