@@ -1,0 +1,40 @@
+flowchart TD
+    START([Script Loads]) --> INIT[Initialize Vector DBs]
+    INIT --> WAIT[Waiting for Function Call]
+    
+    WAIT --> CHOICE{Which function called?}
+    
+    CHOICE -->|run_graph_agent| GRAPH_RETRIEVE
+    CHOICE -->|run_legacy_agent| LEGACY_START
+    
+    %% Modern Graph Agent Flow
+    GRAPH_RETRIEVE["🔍 Retrieve Node<br/>Route & fetch docs"]
+    GRAPH_RETRIEVE --> GRAPH_GRADE["⚖️ Grade Node<br/>Assess relevance"]
+    GRAPH_GRADE --> GRAPH_DECISION{Relevant?}
+    GRAPH_DECISION -->|Yes| GRAPH_GENERATE["✍️ Generate Node<br/>Produce answer"]
+    GRAPH_DECISION -->|No| GRAPH_CHECK{Max retries?}
+    GRAPH_CHECK -->|No| GRAPH_REWRITE["🔄 Rewrite Node<br/>Rephrase query"]
+    GRAPH_REWRITE --> GRAPH_RETRIEVE
+    GRAPH_CHECK -->|Yes| GRAPH_GENERATE
+    GRAPH_GENERATE --> GRAPH_END([Return Answer])
+    
+    %% Legacy ReAct Agent Flow
+    LEGACY_START["🔧 Create Tools<br/>from retrievers"]
+    LEGACY_START --> LEGACY_AGENT["🤖 Create ReAct Agent<br/>with custom prompt"]
+    LEGACY_AGENT --> LEGACY_LOOP{"AgentExecutor Loop<br/>max 5 iterations"}
+    
+    LEGACY_LOOP --> LEGACY_THOUGHT["💭 Thought<br/>Plan next action"]
+    LEGACY_THOUGHT --> LEGACY_ACTION["⚡ Action<br/>Call retriever tool"]
+    LEGACY_ACTION --> LEGACY_OBSERVE["👁️ Observation<br/>Get results"]
+    LEGACY_OBSERVE --> LEGACY_CHECK{Answer ready?}
+    LEGACY_CHECK -->|No| LEGACY_THOUGHT
+    LEGACY_CHECK -->|Yes| LEGACY_FINAL["✅ Final Answer"]
+    LEGACY_FINAL --> LEGACY_END([Return Answer])
+    
+    style GRAPH_RETRIEVE fill:#1E88E5,color:#fff
+    style GRAPH_GRADE fill:#FDD835,color:#000
+    style GRAPH_GENERATE fill:#43A047,color:#fff
+    style GRAPH_REWRITE fill:#E53935,color:#fff
+    style LEGACY_START fill:#8E24AA,color:#fff
+    style LEGACY_AGENT fill:#8E24AA,color:#fff
+    style LEGACY_LOOP fill:#FB8C00,color:#000

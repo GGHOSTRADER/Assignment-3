@@ -66,3 +66,10 @@ Rename the file `.env_example` to `.env` in the root directory and add your API_
 * Step1: `python build_rag.py`: Before running any agents, you must ingest the PDFs and convert them into vector embeddings. This allows you to experiment with different chunking strategies without re-running the evaluation logic every time.
 * Step2: `python evaluator.py`: Once the database is ready, run the evaluator to benchmark your agent.
   
+
+
+Architecture structure
+config.py       → builds the LLM
+agent.py        → decides WHAT to ask
+LLM layer       → actually SENDS the request
+evaluator.py    → controls WHEN requests happen
