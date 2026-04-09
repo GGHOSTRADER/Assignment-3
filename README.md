@@ -1,4 +1,5 @@
 Tree
+```
 .
 ├── README.md
 ├── __pycache__
@@ -13,7 +14,7 @@ Tree
 ├── langgraph_agent.py
 ├── llm_utils.py
 └── requirements.txt
-
+```
 FILES
 -------------------
 build_rag.py
