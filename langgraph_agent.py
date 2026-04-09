@@ -25,6 +25,20 @@ retry_logic = retry(
     retry=retry_if_exception_type(Exception),
 )
 
+# 🔴 ADDED
+SOURCE_LABELS = {
+    "apple": "Apple 10-K",
+    "tesla": "Tesla 10-K",
+    "FY24_Q4_Consolidated_Financial_Statements": "Apple 10-K",
+    "tsla-20241231-gen": "Tesla 10-K",
+}
+
+
+# 🔴 ADDED
+def get_friendly_source_name(doc, fallback_key: str) -> str:
+    raw_source = doc.metadata.get("source", fallback_key)
+    return SOURCE_LABELS.get(raw_source, SOURCE_LABELS.get(fallback_key, raw_source))
+
 
 def initialize_vector_dbs():
     embeddings = get_embeddings()
@@ -64,7 +78,7 @@ def retrieve_node(state: AgentState):
     llm = get_llm()
 
     # --- [START] Improved Routing Logic ---
-    options = ["apple","tesla","both", "none"]
+    options = ["apple", "tesla", "both", "none"]
     router_prompt = f"""
 Route the user question to the correct datasource.
 
@@ -117,10 +131,10 @@ User Question: {question}
     for t in targets_to_search:
         if t in RETRIEVERS:
             docs = RETRIEVERS[t].invoke(question)
-            source_name = t.capitalize()
-            docs_content += f"\n\n[Source: {source_name}]\n" + "\n".join(
-                [d.page_content for d in docs]
-            )
+            for d in docs:
+                # 🟢 CHANGED
+                source_name = get_friendly_source_name(d, t)
+                docs_content += f"\n\n[Source: {source_name}]\n{d.page_content}"
 
     return {"documents": docs_content, "search_count": state["search_count"] + 1}
 
@@ -167,13 +181,25 @@ def generate_node(state: AgentState):
                 "You are a financial analyst.\n"
                 "Answer ONLY using the provided context.\n"
                 "If the exact answer is not in the context, say 'I don't know'.\n"
-                "ALWAYS cite the source in brackets, e.g. [Source: Apple].\n\n"
+                "ALWAYS cite the source in brackets, e.g. [Source: Apple 10-k].\n\n"
                 "IMPORTANT RULES:\n"
-                "- For financial tables, prefer exact figures from tables over narrative text.\n"
                 "- Distinguish carefully between 3-month and 12-month values.\n"
                 "- If the question asks about 2024 annual results, use the 12-month / full-year 2024 figure, not the quarterly figure.\n"
                 "- Do not guess or infer from percentages if the exact figure is present.\n"
-                "- If multiple values appear, explain which one matches the question.\n\n"
+                "- If multiple values appear, explain which one matches the question.\n"
+                "- If the value appears clearly in narrative text (not a table), you MUST extract it.\n"
+                "- Do NOT restrict yourself to tables only.\n"
+                "- Narrative sentences containing explicit financial figures are valid sources.\n"
+                "Examples of valid extraction:\n"
+                "Table:\n"
+                "Row: banana sales | 2022 | 495\n"
+                "Question: What is banana co banana sales revenue in 2022?\n"
+                "Answer: In 2022, banana co's banana sales revenue was $495 million [Source: banana co 10-K].\n\n"
+                "Narrative in text:\n"
+                "Costs amounted to $1.54 billion in 2023\n"
+                "Question: What were ford costs in 2023?\n"
+                "Answer: In 2024, Ford's cost were $1.54 billion [Source: ford 10-K].\n"
+                "Both are valid.\n"
                 "Context:\n{context}",
             ),
             ("human", "{question}"),

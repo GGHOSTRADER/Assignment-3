@@ -122,7 +122,7 @@ TEST_CASES = [
     },
     {
         "name": "Test B2 [Mixed]: Tesla CapEx",
-        "question": "Tesla 在 2024 年的資本支出 (Capital Expenditures) 是多少？",
+        "question": "Tesla 在 2024 年的資本支出 (   ) 是多少？",
         "must_contain": ["11", "billion", "11,153"],
         "forbidden": ["Apple"],
     },
