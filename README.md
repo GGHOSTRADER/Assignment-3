@@ -2,7 +2,7 @@
 ---
 
 Student Name: Guillermo Alfonso Medrano Sanchez / ⾼⽂昊  
-Student ID NTHU: 114065425 
+Student ID NTHU: 114065425  
 Student ID NCU: Z1140179
 
 ---
