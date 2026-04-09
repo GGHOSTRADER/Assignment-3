@@ -1,75 +1,57 @@
-**You can edit functions in `graph_agent.py`, and in evaluator.py can change test_mode (LEGACY is langchain mode, GRAPH is langgraph)**  
+Tree
+.
+├── README.md
+├── __pycache__
+├── build_rag.py
+├── build_rag_simple.py
+├── chroma_db
+├── chunk_testing.py
+├── config.py
+├── control_flow_assig3.mmd
+├── data
+├── evaluator.py
+├── langgraph_agent.py
+├── llm_utils.py
+└── requirements.txt
 
-# 🛠️ Prerequisites
-Before you begin, ensure you have the following installed:
+FILES
+-------------------
+build_rag.py
 
-* Python 3.11 (Strict requirement) 
+Main builder of Rag, is table aware and can rewrite files. It needs flag --udpdate_doc to run. Has chunk size and overlap.
 
-* Google Cloud API Key or other LLM Key
-# ⚙️ Environment Setup
-### 1. Virtual Environment Setup
+Example of CLI
+python build_rag.py --update_doc yes
 
-It is highly recommended to use a virtual environment to manage dependencies.
+-------------------
+build_rag_simple.py
 
-**For macOS / Linux:**
-```
-# Create virtual environment
-python -m venv venv
+Simple text cleaner, to chunks to embeddings and DB. Only relies on chainging the chunk size and overlap.
 
-# Activate environment
-source venv/bin/activate
-```
-**For Windows:**
-```
-# Create virtual environment
-python -m venv venv
+-------------------
 
-# Activate environment
-venv\Scripts\activate
-```
+chunk_testing.py
 
-### 2. Install Dependencies
+Used to search in the RAG DB and test how different sized and models would affect. Can change the DB it looks for and question it uses for query.
 
-`pip install -r requirements.txt`
+-------------------
 
-### 3. Environment Variables (.env)
+config.py
 
-Rename the file `.env_example` to `.env` in the root directory and add your API_KEY
+Model groq was added but it broke langChain dependencies pn the environment if I tried to use it directly, so I had to use openai version and point it to Groq url. Must change the embedding model in it to use different models.
 
-# 📂 File Descriptions
+-------------------
 
-* **data/:** Folder containing the raw PDF financial reports
-* **langgraph_agent.py:** [MAIN WORKSPACE] This is where you will write your code. It contains the logic for:
-  * PDF Ingestion: `initialize_vector_dbs()`
+.env
+New provider was added, must have this to run
 
-  *  Graph Nodes: `retrieve_node`, `grade_documents_node`, `generate_node`, `rewrite_node`.
-
-  *  Legacy Agent: `run_legacy_agent` (The baseline for comparison).
-* **evaluator.py:** The benchmark testing script. It runs a suite of test cases (Apple Revenue, Tesla R&D, Comparison, Traps) and uses "LLM-as-a-Judge" to score your agent (Pass/Fail).
-* **config.py:** Configuration file that handles API key loading and initializes the LLM and Embedding models.
-
-
-# 📝 Student Tasks
-**You need to complete the TODO sections in `langgraph_agent.py`.**
-* Task 1 (Legacy): Implement the run_legacy_agent Prompt Template to establish a baseline (langchain).
-
-* Task 2 (Router): Implement the retrieve_node logic to route queries to "apple", "tesla", or "both".
-
-* Task 3 (Grader): Implement the grade_documents_node to filter out irrelevant documents.
-
-* Task 4 (Generator): Implement the generate_node to answer questions in English with Citations.
-
-* Task 5 (Rewriter): Implement the rewrite_node to refine search queries when retrieval fails.
-
-# 🚀 Execution Order
-
-* Step1: `python build_rag.py`: Before running any agents, you must ingest the PDFs and convert them into vector embeddings. This allows you to experiment with different chunking strategies without re-running the evaluation logic every time.
-* Step2: `python evaluator.py`: Once the database is ready, run the evaluator to benchmark your agent.
-  
+LLM_PROVIDER= groq 
+GROQ_API_KEY= xxxxxxxxxxxxxxxxxx
+GROQ_MODEL= meta-llama/llama-4-scout-17b-16e-instruct
 
 
-Architecture structure
-config.py       → builds the LLM
-agent.py        → decides WHAT to ask
-LLM layer       → actually SENDS the request
-evaluator.py    → controls WHEN requests happen
+-------------------
+
+requirements.txtz
+
+Updated list of requirements I used.
