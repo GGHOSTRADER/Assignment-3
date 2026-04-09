@@ -1,3 +1,17 @@
+# Assignment 3
+---
+
+Student Name: Guillermo Alfonso Medrano Sanchez / ⾼⽂昊 
+Student ID NTHU: 114065425 
+Student ID NCU: Z1140179
+
+---
+## Goal
+- The primary objective of this assignment is to transition from building linear chains to LangGraph. Students will learn to construct a state-aware RAG system capable of Self-Correction and Intelligent Routing. 
+- Try to use different embedding models and know the difference.
+
+---
+
 Tree
 ```
 .
