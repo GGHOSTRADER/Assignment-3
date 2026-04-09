@@ -55,3 +55,10 @@ GROQ_MODEL= meta-llama/llama-4-scout-17b-16e-instruct
 requirements.txtz
 
 Updated list of requirements I used.
+
+
+-------------------
+
+llm_utils.py
+
+When trying to use gemini, I added a wrapper to delay the calls and not hit minute limit but overcomed the issue when changed to Groq.
